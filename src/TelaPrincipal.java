@@ -1,11 +1,8 @@
-
 import javax.swing.*;
-import javax.swing.text.MaskFormatter;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.Formatter;
 
 public class TelaPrincipal extends JFrame implements ActionListener {
     public static final String MENU_PRINCIPAL_ABRIR = "menuPrincipalAbrir";
@@ -14,7 +11,6 @@ public class TelaPrincipal extends JFrame implements ActionListener {
     private JPanel painelTopo;
     private JPanel painelGeral;
     private JPanel painelRodape;
-    private JLabel labelVersao;
     private JMenuBar menuBar;
     private JTextArea textArea;
     private BancoDeDados bd;
@@ -78,23 +74,21 @@ public class TelaPrincipal extends JFrame implements ActionListener {
         menuBar.add(menuArquivo);
         this.setJMenuBar(menuBar);
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals(MENU_PRINCIPAL_SAIR)) {
+        if (e.getActionCommand().equals(MENU_PRINCIPAL_SAIR)) {
             System.exit(0);
-        }
-        else if(e.getActionCommand().equals(MENU_PRINCIPAL_ABRIR)) {
+        } else if (e.getActionCommand().equals(MENU_PRINCIPAL_ABRIR)) {
             JFileChooser seletorDeArquivo = new JFileChooser(".");
             int opcao = seletorDeArquivo.showOpenDialog(this);
-            if(opcao==JFileChooser.APPROVE_OPTION) {
+            if (opcao == JFileChooser.APPROVE_OPTION) {
                 File arquivoSelecionado = seletorDeArquivo.getSelectedFile();
                 abrirBancoDeDados(arquivoSelecionado);
+            } else {
+                // labelMensagens.setText("abrir arquivo cancelado");
             }
-            else {
-                //labelMensagens.setText("abrir arquivo cancelado");
-            }
-        }
-        else if(e.getActionCommand().equals(BOTAO_PESQUISAR)) {
+        } else if (e.getActionCommand().equals(BOTAO_PESQUISAR)) {
             pesquisar(txtCodigo.getText().toUpperCase());
         }
     }
@@ -110,7 +104,7 @@ public class TelaPrincipal extends JFrame implements ActionListener {
         textArea.append(System.lineSeparator());
         textArea.append("Total de " + bd.getQuantidade() + " linhas.");
         textArea.append(System.lineSeparator());
-        textArea.append("Tempo para carregar (SEGUNDOS): " + tempo/1000 + ".");
+        textArea.append("Tempo para carregar (SEGUNDOS): " + tempo / 1000 + ".");
         textArea.append(System.lineSeparator());
         painelPesquisa.setVisible(true);
         txtCodigo.requestFocus();
@@ -118,24 +112,36 @@ public class TelaPrincipal extends JFrame implements ActionListener {
 
     private void pesquisar(String chave) {
         textArea.append(System.lineSeparator());
-        textArea.append("-".repeat(100));
+        textArea.append(repeatString("-", 100));
         textArea.append(System.lineSeparator());
         textArea.append("Pesquisando o código " + chave + "...");
 
         Mercadoria m = null;
         long ti = System.currentTimeMillis();
-        for (int i = 0; i < bd.getQuantidade(); i++) m = bd.pesquisarMercadoria(chave);
+        for (int i = 0; i < bd.getQuantidade(); i++)
+            m = bd.pesquisarMercadoria(chave);
         long tf = System.currentTimeMillis();
         long tempo = tf - ti;
-        if(m==null) {
+        if (m == null) {
             textArea.append(System.lineSeparator() + "Codigo " + chave + " não localizado!");
-        }
-        else {
+        } else {
             textArea.append(System.lineSeparator() + "Mercadoria localizada com sucesso!");
             textArea.append(System.lineSeparator() + "Código...: " + m.getCodigo());
             textArea.append(System.lineSeparator() + "Descrição: " + m.getDescricao());
             textArea.append(System.lineSeparator() + "Preço....: " + m.getPreco());
         }
-        textArea.append(System.lineSeparator() + "Tempo de pesquisa (SEGUNDOS): " + tempo/1000 );
+        textArea.append(System.lineSeparator() + "Tempo de pesquisa (SEGUNDOS): " + tempo / 1000);
+    }
+
+    private String repeatString(String str, int count) {
+        StringBuilder repeated = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            repeated.append(str);
+        }
+        return repeated.toString();
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(() -> new TelaPrincipal());
     }
 }
