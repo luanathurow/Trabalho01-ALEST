@@ -44,28 +44,22 @@ public class BancoDeDados {
         }
     }
 
+    // método busca binaria implementado pelo grupo
     public Mercadoria pesquisarMercadoria(String chave) {
-        for (int i = 0; i < quantidade; i++) {
-            if (chave.equals(mercadorias[i].getCodigo()))
-                return mercadorias[i];
+        int inicio = 0;
+        int fim = quantidade - 1;
+
+        while(inicio <= fim){
+            int meio = inicio + (fim - inicio) /2;
+            String codigoMeio = mercadorias[meio].getCodigo();
+            int comparacao = chave.compareTo(codigoMeio);
+
+            if(comparacao == 0) return mercadorias[meio];
+            else if (comparacao < 0) fim = meio - 1;
+            else  inicio =meio + 1;
         }
         return null;
     }
-
-    // método bubble sort implementado pelo professor
-    /*
-     * private void ordenarPorCodigo() {
-     * for (int i = 0; i < this.quantidade; i++) {
-     * for (int j = 0; j < this.quantidade-i-1; j++) {
-     * if(mercadorias[j].getCodigo().compareTo(mercadorias[j+1].getCodigo())>0) {
-     * Mercadoria temp = mercadorias[j+1];
-     * mercadorias[j+1] = mercadorias[j];
-     * mercadorias[j] = temp;
-     * }
-     * }
-     * }
-     * }
-     */
 
     // método merge sort implementado pelo grupo
     private void mergeSort(int low, int high) {
